@@ -1,0 +1,5 @@
+sim/images/out
+sim/run/*
+*.docx
+*.pptx
+*.pdf

@@ -1,0 +1,12 @@
+
+{signal: [
+  {name: 'clk', wave: 'p.........'},
+  {name: 's_mb_dat', wave: 'x22xx22xx.', data:["P0", "P1", "P2", "P3"]},
+  {name: 's_mb_val', wave: '01.0.1.0..'},
+  {name: 's_mb_rdy', wave: '1.........'},
+  {name: 's_mb_aux[0]', wave: '010.......'},
+  {name: 's_mb_aux[1]', wave: '0.........'}],
+  config: { skin: "narrow", hscale: 3 },
+ foot: {text: ['tspan', {dx: -207, dy: -49, 'font-size':'10'}, "Start of Frame"]}
+}
+
