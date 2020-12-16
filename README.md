@@ -17,13 +17,13 @@
 
 ## Overview
 A 2D median filtering implementation in Verilog.
-*	Synthesizable, technology independent Verilog IP Core
-*	Apply median filtering to input stream
-*	All signals synchronous with the input clock
-*	Supports kernel size 3x3 fully; larger size kernels (e.g. 5x5) provides rough sorting !!!
-*	Supports masking; apply filtering only to non-mask regions
-* 	Supports padding zeros/ones to regions outside image
-*	FPGA proven (Tested on XC7A100T)
+* Synthesizable, technology independent Verilog IP Core
+* Apply median filtering to input stream
+* All signals synchronous with the input clock
+* Supports kernel size 3x3 fully; larger size kernels (e.g. 5x5) provides rough sorting !!!
+* Supports masking; apply filtering only to non-mask regions
+* Supports padding zeros/ones to regions outside image
+* FPGA proven (Tested on XC7A100T)
 </br>
 
 ## Applications
@@ -68,36 +68,36 @@ Output buffering module gets processed lines from sorting block into a FIFO. The
 ## Parameters
 |Parameter Name|Description|Type|Valid Range|
 |-|-|-|-|
-|DW_VD		|Data width		|	integer	|DW_VD>1|
-|SIZE		|Kernel size  </br> Note: The case where SIZE=3 performs full median filtering. </br> When set to sizes > 3, the module performs partial sorting and does not guarantee finding the exact medians. |integer	| 3, 5, 7, …. |
-|IN_BUF_LEN	|Input buffer depth|integer|Powers of two|
+|DW_VD        |Data width        |    integer    |DW_VD>1|
+|SIZE        |Kernel size  </br> Note: The case where SIZE=3 performs full median filtering. </br> When set to sizes > 3, the module performs partial sorting and does not guarantee finding the exact medians. |integer    | 3, 5, 7, …. |
+|IN_BUF_LEN    |Input buffer depth|integer|Powers of two|
 |OUT_BUF_LEN|Output buffer depth|Powers of two|
-|USE_VENDOR_FIFO|This parameter selects the FIFO instantiation source in the design.</br> If this is set to 0, then “sync_fifo_generic” module will be used for instantiation where a FIFO is needed.</br> If this is set to 1, then “sync_fifo_vendor” module will be used. </br> If planning to use this source, you need to generate a vendor FIFO IP in your environment and instantiate it under “sync_fifo_vendor” module.</br> In order to reduce the number of used resources/LUTs in a FPGA, the recommended way is using “sync_fifo_vendor” where you utilize built-in dedicated resources.|integer|	0 or 1|
-|PAD_OPT|“zeros” : Assume zero valued pixels outside the image frame</br> “ones” : Assume 2<sup>DW_VD</sup>-1 valued pixels outside the image frame|string|	“zeros” or “ones”|
+|USE_VENDOR_FIFO|This parameter selects the FIFO instantiation source in the design.</br> If this is set to 0, then “sync_fifo_generic” module will be used for instantiation where a FIFO is needed.</br> If this is set to 1, then “sync_fifo_vendor” module will be used. </br> If planning to use this source, you need to generate a vendor FIFO IP in your environment and instantiate it under “sync_fifo_vendor” module.</br> In order to reduce the number of used resources/LUTs in a FPGA, the recommended way is using “sync_fifo_vendor” where you utilize built-in dedicated resources.|integer|    0 or 1|
+|PAD_OPT|“zeros” : Assume zero valued pixels outside the image frame</br> “ones” : Assume 2<sup>DW_VD</sup>-1 valued pixels outside the image frame|string|    “zeros” or “ones”|
 
 </br>
 
 ## Pinout Description
 
-|Pin Name	|I/O	|Description		|Active State	|
-|-			|-		|-					|-				|
-|clk		|in		|Module clock		|rising edge	|
-|rstb		|in		|Asynchronous reset	|low			|
-|**SLAVE VIDEO BUS**			
-|s_vb_aux [3:0]|in	|Slave video bus auxiliary data</br> [0]: SOF</br> [1]: EOL</br> [2]: MSK</br>[3]: don’t care|high|
-|s_vb_dat[DW_VD-1:0]|in	|Slave video bus pixel data|data|
-|s_vb_val|in	|Data valid flag	|high|
-|s_vb_rdy|out	|Ready to accept input data |high (handshake signal)|
+|Pin Name   |I/O       |Description        |Active State       |
+|-          |-         |-                  |-                  |
+|clk        |in        |Module clock       |rising edge        |
+|rstb       |in        |Asynchronous reset |low                |
+|**SLAVE VIDEO BUS**            
+|s_vb_aux [3:0]|in    |Slave video bus auxiliary data</br> [0]: SOF</br> [1]: EOL</br> [2]: MSK</br>[3]: don’t care|high|
+|s_vb_dat[DW_VD-1:0]|in    |Slave video bus pixel data|data|
+|s_vb_val|in    |Data valid flag    |high|
+|s_vb_rdy|out    |Ready to accept input data |high (handshake signal)|
 |**MASTER VIDEO BUS**|
-|m_vb_aux [3:0]	|out|	Master video bus auxiliary data</br> [0]: SOF </br>[1]: EOL </br>[2]: MSK</br> [3]: don’t care|	high|
-|m_vb_dat[DW_VD-1:0]|	out	|Master video bus pixel data|data|
-|m_vb_val|out	|Data valid flag	|high|
-|m_vb_rdy|in	|Ready to accept input data	|high (handshake signal)|
+|m_vb_aux [3:0]    |out|    Master video bus auxiliary data</br> [0]: SOF </br>[1]: EOL </br>[2]: MSK</br> [3]: don’t care|    high|
+|m_vb_dat[DW_VD-1:0]|    out    |Master video bus pixel data|data|
+|m_vb_val|out    |Data valid flag    |high|
+|m_vb_rdy|in    |Ready to accept input data    |high (handshake signal)|
 |**SLAVE MEMORY BUS**|
-|s_mb_adr [7:0]	|in	|Memory bus address		|data	|
-|s_mb_wdt [15:0]|in	|Memory bus write data	|data	|
-|s_mb_rdt [15:0]|out|Memory bus read data	|data	|
-|s_mb_val		|in	|Memory bus write valid	|high	|
+|s_mb_adr [7:0]     |in     |Memory bus address         |data    |
+|s_mb_wdt [15:0]    |in     |Memory bus write data      |data    |
+|s_mb_rdt [15:0]    |out    |Memory bus read data       |data    |
+|s_mb_val           |in     |Memory bus write valid     |high    |
 
 </br>
 
@@ -135,33 +135,33 @@ This interface consists of 4 signals/buses and used to configure the memory of I
 ## Source Files
 All source files are provided as text files coded in Verilog/SystemVerilog. The following table gives a brief explanation of each file.
 
-|Source file			|Description							|
-|-						|-										|
-|**Design**				|										|
-|median_filt.v			|Median filter top module				|
-|median_filt_buf.v		|Line buffering							|
-|median_filt_conf.v		|IP configuration memory				|
-|median_filt_core.v		|Finds median in a given matrix			|
-|median_filt_filt.v		|Filtering logic with core				|
-|median_filt_tx.v		|Transmitter block with a buffer		|
-|sync_fifo.v			|Instantiated FIFO used everywhere buffering needed|
-|sync_fifo_generic.v	|Generic synchronized FIFO implementation|
-|sync_fifo_vendor.v		|Template file for vendor FIFO IP instantiation |
-|reset_gen.v			|Reset generation module				|
-|sort_NxN.v				|Sorting blocks							|
-|sort_N.v				|Sorting blocks							|
-|transpose_NxN.v		|Sorting blocks							|
-|dia_data_NxN.v			|Sorting blocks							|
-|single_pass_sorter.v	|Sorting blocks							|
-|comparator.v			|Sorting blocks							|
-|**Simulation**			|										|
-|tb.sv					|Top testbench module					|
-|frame_timing_gen.v		|Video timing generation in TB			|
-|pgm_reader.sv			|Read PGM image files into TB			|
-|parallel_2_vbus.v		|Converts parallel video bus to VBUS	|
-|vbus_2_parallel.v		|Converts VBUS to parallel video bus 	|
-|file_frame_grabber.sv	|Grabs frames from parallel video bus and record them to PGM files  	|
-|file_compare.sv		|Reads and compares two files			|
+|Source file            |Description                                |
+|-                      |-                                          |
+|**Design**             |                                           |
+|median_filt.v          |Median filter top module                   |
+|median_filt_buf.v      |Line buffering                             |
+|median_filt_conf.v     |IP configuration memory                    |
+|median_filt_core.v     |Finds median in a given matrix             |
+|median_filt_filt.v     |Filtering logic with core                  |
+|median_filt_tx.v       |Transmitter block with a buffer            |
+|sync_fifo.v            |Instantiated FIFO used everywhere buffering needed|
+|sync_fifo_generic.v    |Generic synchronized FIFO implementation|
+|sync_fifo_vendor.v     |Template file for vendor FIFO IP instantiation |
+|reset_gen.v            |Reset generation module                    |
+|sort_NxN.v             |Sorting blocks                             |
+|sort_N.v               |Sorting blocks                             |
+|transpose_NxN.v        |Sorting blocks                             |
+|dia_data_NxN.v         |Sorting blocks                             |
+|single_pass_sorter.v   |Sorting blocks                             |        
+|comparator.v           |Sorting blocks                             |
+|**Simulation**         |                                           |
+|tb.sv                  |Top testbench module                       |
+|frame_timing_gen.v     |Video timing generation in TB              |
+|pgm_reader.sv          |Read PGM image files into TB               |
+|parallel_2_vbus.v      |Converts parallel video bus to VBUS        |
+|vbus_2_parallel.v      |Converts VBUS to parallel video bus        |
+|file_frame_grabber.sv  |Grabs frames from parallel video bus and record them to PGM files      |
+|file_compare.sv        |Reads and compares two files               |
 </br>
 
 
